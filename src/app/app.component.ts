@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { z } from 'zod';
+import { environment } from 'src/environments/environment';
 
 const ZodApiResponse = z.array(z.object({
   title: z.string(),
@@ -35,25 +36,20 @@ type ZodApiResponse = z.infer<typeof ZodApiResponse>;
 })
 export class AppComponent {
   title = 'where-watch';
-  inputTitle = "";
   results: ZodApiResponse = [];
 
-  onBlur(enteredText: string): void {
-    this.inputTitle = enteredText;
-  }
-
-  async search(): Promise<ZodApiResponse> {
-    const url = `https://streaming-availability.p.rapidapi.com/v2/search/title?title=${this.inputTitle}&country=us`;
+  async search(inputTitle: string): Promise<ZodApiResponse> {
+    const url = `https://streaming-availability.p.rapidapi.com/v2/search/title?title=${inputTitle}&country=us`;
     const options = {
       method: 'GET',
       headers: {
-        'X-RapidAPI-Key': '',
+        'X-RapidAPI-Key': environment.apiKey,
         'X-RapidAPI-Host': 'streaming-availability.p.rapidapi.com'
       }
     };
     const response = await fetch(url, options);
     const result = await response.json();
-    // console.log("results", result.result);
+    console.log("results", result.result);
     this.results = result.result;
     return ZodApiResponse.parse(this.results);
   }
