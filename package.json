@@ -1,15 +1,20 @@
 {
   "name": "where-watch",
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "bin": {
+    "where-watch": "index.js"
+  },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "full": "yarn build && javascript-obfuscator docs --output docs && start http://localhost:3000 && serve docs"
+    "browser": "start http://localhost:3000",
+    "docs": "serve docs",
+    "run-bin": "run-p browser docs",
+    "full": "yarn build && javascript-obfuscator docs --output docs && yarn run-bin"
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "^14.3.0",
     "@angular/common": "^14.3.0",
@@ -19,7 +24,9 @@
     "@angular/platform-browser": "^14.3.0",
     "@angular/platform-browser-dynamic": "^14.3.0",
     "@angular/router": "^14.3.0",
+    "npm-run-all2": "^6.0.6",
     "rxjs": "~7.5.0",
+    "serve": "^14.2.0",
     "tslib": "^2.3.0",
     "zod": "^3.21.4",
     "zone.js": "~0.11.4"
@@ -37,7 +44,6 @@
     "karma-coverage": "~2.1.0",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "~1.7.0",
-    "serve": "^14.2.0",
     "typescript": "~4.6.2"
   }
 }
