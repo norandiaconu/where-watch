@@ -1,19 +1,21 @@
 {
   "name": "where-watch",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "bin": {
     "where-watch": "index.js"
   },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build && javascript-obfuscator docs",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "browser": "start http://localhost:3000",
     "docs": "serve docs",
     "run-bin": "run-p browser docs",
-    "full": "yarn build && javascript-obfuscator docs --output docs && yarn run-bin"
+    "android-init": "cap init --web-dir docs && cap add android && capacitor-assets generate --android",
+    "android": "npm run build && cap sync && cap open android",
+    "full": "npm run build && npm run run-bin"
   },
   "dependencies": {
     "@angular/animations": "^14.3.0",
@@ -35,6 +37,9 @@
     "@angular-devkit/build-angular": "^14.2.12",
     "@angular/cli": "^14.2.12",
     "@angular/compiler-cli": "^14.3.0",
+    "@capacitor/android": "^5.2.2",
+    "@capacitor/assets": "^2.0.4",
+    "@capacitor/cli": "^5.2.2",
     "@types/jasmine": "~3.10.0",
     "@types/node": "^12.11.1",
     "jasmine-core": "~4.0.0",
