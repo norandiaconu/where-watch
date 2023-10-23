@@ -1,10 +1,17 @@
 <div class="toolbar" role="banner">
-  <span class="ml30">where-watch</span>
+  <span class="ml30 underline">where-watch</span>
+  <div class="spacer"></div>
+  <span *ngIf="this.httpOptions.headers.Authorization !== ''" class="logged-in">When Logged In</span>
+  <span *ngIf="this.httpOptions.headers.Authorization === ''" class="not-logged-in">When Not Logged In</span>
+  <button (click)="login()" class="login">LOGIN</button>
 </div>
 
 <div class="content" role="main">
   <input #box (keyup.enter)="search(box.value)" class="mb10">
-  <button (click)="search(box.value)" class="mb10">SEARCH</button>
+  <span>
+    <button (click)="search(box.value)" class="mb10 search">WHERE</button>
+    <button (click)="searchWhen(box.value)" class="mb10 search">WHEN</button>
+  </span>
   <div *ngFor="let item of results" class="mb5">
     <span class="title">{{ item.title }} -></span>
     <span class="title" *ngIf="isEmpty(item.streamingInfo) || checkWhere(item.streamingInfo.us).length === 0">N/A</span>
@@ -16,6 +23,11 @@
     <span *ngIf="!isEmpty(item.streamingInfo) && checkWhere(item.streamingInfo.us).includes('netflix')" class="netflix">Netflix</span>
     <br />
   </div>
+  <div class="list">
+    <button *ngFor="let result of whenResults" (click)="lastAiring(result)" class="buttons">{{result.name}}</button>
+  </div>
+  <div class="date">{{ chosen }}</div>
+  <div [ngClass]="{'logged-in': !future, 'not-logged-in': future}">{{ date }}</div>
 
   <svg id="clouds" xmlns="http://www.w3.org/2000/svg" width="2611.084" height="350" viewBox="0 0 2611.084 485.677">
     <title>Gray Clouds Background</title>
