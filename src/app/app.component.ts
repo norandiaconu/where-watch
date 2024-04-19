@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { z } from 'zod';
-import { environment } from 'src/environments/environment';
+import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Select, Store } from '@ngxs/store';
 import { AddLogin } from './login.actions';

@@ -1,6 +1,6 @@
 {
   "name": "where-watch",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "bin": {
     "where-watch": "index.js"
   },
@@ -8,8 +8,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build && javascript-obfuscator docs && node obfuscate.js",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test",
+    "test": "jest",
     "browser": "start http://localhost:3000",
     "docs": "serve docs",
     "run-bin": "run-p browser docs",
@@ -43,15 +42,11 @@
     "@capacitor/android": "^5.2.2",
     "@capacitor/assets": "^3.0.1",
     "@capacitor/cli": "^5.2.2",
-    "@types/jasmine": "~3.10.0",
+    "@types/jest": "~29.5.12",
     "@types/node": "^12.11.1",
-    "jasmine-core": "~4.0.0",
     "javascript-obfuscator": "^4.0.2",
-    "karma": "~6.3.0",
-    "karma-chrome-launcher": "~3.1.0",
-    "karma-coverage": "~2.1.0",
-    "karma-jasmine": "~4.0.0",
-    "karma-jasmine-html-reporter": "~1.7.0",
+    "jest": "~29.7.0",
+    "jest-preset-angular": "~14.0.3",
     "tailwindcss": "^3.3.3",
     "typescript": "~4.9.5"
   }
