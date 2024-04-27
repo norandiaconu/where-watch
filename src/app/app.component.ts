@@ -26,6 +26,8 @@ interface ResultData {
 }
 const ZodApiResponse = z.array(z.object({
   title: z.string(),
+  year: z.optional(z.number()),
+  firstAirYear: z.optional(z.number()),
   streamingInfo: z.object({
     us: z.optional(z.object({
       hbo: z.optional(z.array(z.object({
@@ -91,7 +93,6 @@ export class AppComponent implements OnInit {
     };
     const response = await fetch(url, options);
     const result = await response.json();
-    console.log("results", result.result);
     this.date = "";
     this.chosen = "";
     this.whenResults = [];
@@ -128,10 +129,8 @@ export class AppComponent implements OnInit {
 
   login(): void {
     this.http.post<LoginResponse>("https://api4.thetvdb.com/v4/login", { apikey: environment.whenApiKey }).subscribe(response => {
-      console.log("1", response);
       this.store.dispatch(new AddLogin(response.data.token));
       this.httpOptions.headers.Authorization = "Bearer " + response.data.token;
-      console.log("1.1", this.httpOptions);
     });
   }
 
@@ -141,7 +140,6 @@ export class AppComponent implements OnInit {
     this.http
       .get<SearchResponse>("https://api4.thetvdb.com/v4/search?query=" + searchTerm + "&type=series&language=eng&limit=10", this.httpOptions)
       .subscribe(searchResponse => {
-        console.log("2", searchResponse);
         this.results = [];
         this.whenResults = [];
         searchResponse.data.forEach(result => {
@@ -152,7 +150,6 @@ export class AppComponent implements OnInit {
 
   lastAiring(searchData: SearchData): void {
     this.http.get<ResultData>("https://api4.thetvdb.com/v4/series/" + searchData.tvdb_id, this.httpOptions).subscribe(resultData => {
-      console.log("3", resultData);
       this.chosen = "When to watch " + searchData.name + ":";
       this.date = resultData.data.lastAired;
       const today = new Date();
