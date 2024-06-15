@@ -18,7 +18,7 @@ export class LoginState {
   }
 
   @Action(AddLogin)
-  addLogin({patchState, getState}: StateContext<LoginStateModel>, {newLogin}: AddLogin): void {
+  addLogin({patchState}: StateContext<LoginStateModel>, {newLogin}: AddLogin): void {
     patchState({login: newLogin});
   }
 }

@@ -67,7 +67,7 @@ export class AppComponent implements OnInit {
       Authorization: ""
     }
   };
-  date: string = "";
+  date = "";
   chosen = "";
   whenResults: SearchData[] = [];
   future = false;
@@ -101,7 +101,7 @@ export class AppComponent implements OnInit {
   }
 
   checkWhere(locations: any): string[] {
-    let where: string[] = [];
+    const where: string[] = [];
     Object.entries(locations).forEach((location: any) => {
       location[1].forEach((type: { type: string; }) => {
         if (location[0] === 'hbo' && type.type === 'subscription') {
@@ -157,7 +157,7 @@ export class AppComponent implements OnInit {
     });
   }
 
-  isEmpty(obj: Object): boolean {
+  isEmpty(obj: object): boolean {
     return (obj && (Object.keys(obj).length === 0));
   }
 }
