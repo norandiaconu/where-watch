@@ -1,16 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { z } from 'zod';
 import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Select, Store } from '@ngxs/store';
-import { AddLogin } from './login.actions';
-import { Observable } from 'rxjs';
-import { LoginState } from './login.state';
+import { NgxIndexedDBService } from 'ngx-indexed-db';
+import { catchError, of, tap } from 'rxjs';
 
 interface LoginResponse {
   data: {
-    token: string
-  }
+    token: string;
+  };
 }
 interface SearchResponse {
   data: SearchData[];
@@ -22,64 +20,91 @@ interface SearchData {
 interface ResultData {
   data: {
     lastAired: string;
-  }
+  };
 }
-const ZodApiResponse = z.array(z.object({
-  title: z.string(),
-  year: z.optional(z.number()),
-  firstAirYear: z.optional(z.number()),
-  streamingInfo: z.object({
-    us: z.optional(z.object({
-      hbo: z.optional(z.array(z.object({
-        type: z.string()
-      }))),
-      hulu: z.optional(z.array(z.object({
-        type: z.string()
-      }))),
-      peacock: z.optional(z.array(z.object({
-        type: z.string()
-      }))),
-      apple: z.optional(z.array(z.object({
-        type: z.string()
-      }))),
-      prime: z.optional(z.array(z.object({
-        type: z.string()
-      }))),
-      netflix: z.optional(z.array(z.object({
-        type: z.string()
-      })))
-    }))
+const ZodApiResponse = z.array(
+  z.object({
+    title: z.string(),
+    year: z.optional(z.number()),
+    firstAirYear: z.optional(z.number()),
+    streamingInfo: z.object({
+      us: z.optional(
+        z.object({
+          hbo: z.optional(
+            z.array(
+              z.object({
+                type: z.string()
+              })
+            )
+          ),
+          hulu: z.optional(
+            z.array(
+              z.object({
+                type: z.string()
+              })
+            )
+          ),
+          peacock: z.optional(
+            z.array(
+              z.object({
+                type: z.string()
+              })
+            )
+          ),
+          apple: z.optional(
+            z.array(
+              z.object({
+                type: z.string()
+              })
+            )
+          ),
+          prime: z.optional(
+            z.array(
+              z.object({
+                type: z.string()
+              })
+            )
+          ),
+          netflix: z.optional(
+            z.array(
+              z.object({
+                type: z.string()
+              })
+            )
+          )
+        })
+      )
+    })
   })
-}));
+);
 type ZodApiResponse = z.infer<typeof ZodApiResponse>;
+interface Entry {
+  id: number;
+  token: string;
+}
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
-  @Select(LoginState.getLogin) login$?: Observable<string>;
+export class AppComponent {
   title = 'where-watch';
   results: ZodApiResponse = [];
   httpOptions = {
     headers: {
-      Authorization: ""
+      Authorization: ''
     }
   };
-  date = "";
-  chosen = "";
+  date = '';
+  chosen = '';
   whenResults: SearchData[] = [];
   future = false;
 
-  constructor(private readonly http: HttpClient, private readonly store: Store) {}
-
-  ngOnInit(): void {
-    if (this.httpOptions.headers.Authorization === "") {
-      this.login$?.subscribe(response => {
-        this.httpOptions.headers.Authorization = response;
-      });
-    }
+  constructor(private readonly http: HttpClient, private db: NgxIndexedDBService) {
+    this.db.getAll<Entry>('login').subscribe((entries: Entry[]) => {
+      this.httpOptions.headers.Authorization = entries[0]?.token;
+    });
   }
 
   async search(inputTitle: string): Promise<ZodApiResponse> {
@@ -93,8 +118,8 @@ export class AppComponent implements OnInit {
     };
     const response = await fetch(url, options);
     const result = await response.json();
-    this.date = "";
-    this.chosen = "";
+    this.date = '';
+    this.chosen = '';
     this.whenResults = [];
     this.results = result.result;
     return ZodApiResponse.parse(this.results);
@@ -103,7 +128,7 @@ export class AppComponent implements OnInit {
   checkWhere(locations: any): string[] {
     const where: string[] = [];
     Object.entries(locations).forEach((location: any) => {
-      location[1].forEach((type: { type: string; }) => {
+      location[1].forEach((type: { type: string }) => {
         if (location[0] === 'hbo' && type.type === 'subscription') {
           where.push(location[0]);
         }
@@ -128,29 +153,55 @@ export class AppComponent implements OnInit {
   }
 
   login(): void {
-    this.http.post<LoginResponse>("https://api4.thetvdb.com/v4/login", { apikey: environment.whenApiKey }).subscribe(response => {
-      this.store.dispatch(new AddLogin(response.data.token));
-      this.httpOptions.headers.Authorization = "Bearer " + response.data.token;
-    });
-  }
-
-  searchWhen(searchTerm: string) {
-    this.date = "";
-    this.chosen = "";
     this.http
-      .get<SearchResponse>("https://api4.thetvdb.com/v4/search?query=" + searchTerm + "&type=series&language=eng&limit=10", this.httpOptions)
-      .subscribe(searchResponse => {
-        this.results = [];
-        this.whenResults = [];
-        searchResponse.data.forEach(result => {
-          this.whenResults.push(result);
-        });
+      .post<LoginResponse>('https://api4.thetvdb.com/v4/login', {
+        apikey: environment.whenApiKey
+      })
+      .subscribe((response) => {
+        this.db
+          .update('login', {
+            id: 0,
+            token: response.data.token
+          })
+          .subscribe();
+        this.httpOptions.headers.Authorization = 'Bearer ' + response.data.token;
       });
   }
 
+  searchWhen(searchTerm: string) {
+    this.date = '';
+    this.chosen = '';
+    this.http
+      .get<SearchResponse>(
+        'https://api4.thetvdb.com/v4/search?query=' + searchTerm + '&type=series&language=eng&limit=10',
+        this.httpOptions
+      )
+      .pipe(
+        catchError((err) => of(err)),
+        tap((searchResponse) => {
+          this.results = [];
+          this.whenResults = [];
+          if (searchResponse.status === 'success') {
+            searchResponse.data.forEach((result: SearchData) => {
+              this.whenResults.push(result);
+            });
+          } else {
+            this.httpOptions.headers.Authorization = '';
+            this.db
+              .update('login', {
+                id: 0,
+                token: ''
+              })
+              .subscribe();
+          }
+        })
+      )
+      .subscribe();
+  }
+
   lastAiring(searchData: SearchData): void {
-    this.http.get<ResultData>("https://api4.thetvdb.com/v4/series/" + searchData.tvdb_id, this.httpOptions).subscribe(resultData => {
-      this.chosen = "When to watch " + searchData.name + ":";
+    this.http.get<ResultData>('https://api4.thetvdb.com/v4/series/' + searchData.tvdb_id, this.httpOptions).subscribe((resultData) => {
+      this.chosen = 'When to watch ' + searchData.name + ':';
       this.date = resultData.data.lastAired;
       const today = new Date();
       this.future = Date.parse(this.date) > Date.parse(today.toString());
@@ -158,6 +209,6 @@ export class AppComponent implements OnInit {
   }
 
   isEmpty(obj: object): boolean {
-    return (obj && (Object.keys(obj).length === 0));
+    return obj && Object.keys(obj).length === 0;
   }
 }

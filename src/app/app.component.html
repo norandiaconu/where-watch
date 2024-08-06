@@ -1,31 +1,44 @@
 <div class="toolbar" role="banner">
   <span class="ml30">where-watch</span>
   <div class="spacer"></div>
-  <span *ngIf="this.httpOptions.headers.Authorization !== ''" class="logged-in">When Logged In</span>
-  <span *ngIf="this.httpOptions.headers.Authorization === ''" class="not-logged-in">When Not Logged In</span>
+  <span *ngIf="this.httpOptions.headers.Authorization" class="logged-in">Logged In</span>
+  <span *ngIf="!this.httpOptions.headers.Authorization" class="not-logged-in">Logged Out</span>
   <button (click)="login()" class="login">LOGIN</button>
 </div>
 
 <div class="content" role="main">
-  <input #box (keyup.enter)="search(box.value)" class="mb10">
+  <input #box (keyup.enter)="search(box.value)" class="mb10" />
   <span>
     <button (click)="search(box.value)" class="mb10 search">WHERE</button>
-    <button (click)="searchWhen(box.value)" class="mb10 search">WHEN</button>
+    <button (click)="searchWhen(box.value)" class="mb10 search" [disabled]="!this.httpOptions.headers.Authorization">WHEN</button>
   </span>
   <div *ngFor="let item of results" class="mb5">
     <span class="title">{{ item.title }} ({{ item.year }}{{ item.firstAirYear }}) -></span>
     <span class="title" *ngIf="isEmpty(item.streamingInfo) || checkWhere(item.streamingInfo.us).length === 0">N/A</span>
-    <span *ngIf="!isEmpty(item.streamingInfo) && checkWhere(item.streamingInfo.us).includes('hbo')" class="hbo">HBO</span>
-    <span *ngIf="!isEmpty(item.streamingInfo) && checkWhere(item.streamingInfo.us).includes('hulu')" class="hulu">Hulu</span>
-    <span *ngIf="!isEmpty(item.streamingInfo) && checkWhere(item.streamingInfo.us).includes('peacock')" class="peacock">Peacock</span>
-    <span *ngIf="!isEmpty(item.streamingInfo) && checkWhere(item.streamingInfo.us).includes('apple')" class="apple">Apple</span>
-    <span *ngIf="!isEmpty(item.streamingInfo) && checkWhere(item.streamingInfo.us).includes('prime')" class="prime">Prime</span>
-    <span *ngIf="!isEmpty(item.streamingInfo) && checkWhere(item.streamingInfo.us).includes('netflix')" class="netflix">Netflix</span>
+    <span *ngIf="!isEmpty(item.streamingInfo)">
+      <ng-template
+        #location
+        [ngTemplateOutlet]="location"
+        let-location
+        [ngTemplateOutletContext]="{ $implicit: checkWhere(item.streamingInfo.us) }"
+      >
+        <span *ngIf="location.includes('hbo')" class="hbo">HBO</span>
+        <span *ngIf="location.includes('hulu')" class="hulu">Hulu</span>
+        <span *ngIf="location.includes('peacock')" class="peacock">Peacock</span>
+        <span *ngIf="location.includes('apple')" class="apple">Apple</span>
+        <span *ngIf="location.includes('prime')" class="prime">Prime</span>
+        <span *ngIf="location.includes('netflix')" class="netflix">Netflix</span>
+      </ng-template>
+    </span>
     <br />
   </div>
   <div class="list">
-    <button *ngFor="let result of whenResults" (click)="lastAiring(result)" class="buttons">{{result.name}}</button>
+    <button *ngFor="let result of whenResults" (click)="lastAiring(result)" class="buttons">
+      {{ result.name }}
+    </button>
   </div>
   <div class="date">{{ chosen }}</div>
-  <div [ngClass]="{'logged-in': !future, 'not-logged-in': future}">{{ date }}</div>
+  <div [ngClass]="{ 'logged-in': !future, 'not-logged-in': future }">
+    {{ date }}
+  </div>
 </div>

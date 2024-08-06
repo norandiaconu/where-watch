@@ -2,20 +2,21 @@ import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { environment } from '../environments/environment.mock';
 import { HttpClientModule } from '@angular/common/http';
-import { NgxsModule } from '@ngxs/store';
+import { NgxIndexedDBModule } from 'ngx-indexed-db';
+import { dbConfig } from './db';
 
 const env = {
   production: false,
   apiKey: '0',
-  whenApiKey: '0',
+  whenApiKey: '0'
 };
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HttpClientModule, NgxsModule.forRoot()],
+      imports: [HttpClientModule, NgxIndexedDBModule.forRoot(dbConfig)],
       declarations: [AppComponent],
-      providers: [{ provide: environment, useValue: env }],
+      providers: [{ provide: environment, useValue: env }]
     }).compileComponents();
   });
 
@@ -35,8 +36,6 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain(
-      'WHEREWHEN'
-    );
+    expect(compiled.querySelector('.content span')?.textContent).toContain('WHEREWHEN');
   });
 });
