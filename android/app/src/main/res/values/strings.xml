@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">where-watch</string>
-    <string name="title_activity_main">where-watch</string>
-    <string name="package_name">com.norandiaconu.wherewatch</string>
-    <string name="custom_url_scheme">com.norandiaconu.wherewatch</string>
-</resources>
