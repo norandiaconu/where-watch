@@ -6,9 +6,9 @@ import { NgxIndexedDBModule } from 'ngx-indexed-db';
 import { dbConfig } from './db';
 
 @NgModule({
-  declarations: [AppComponent],
-  imports: [BrowserModule, HttpClientModule, NgxIndexedDBModule.forRoot(dbConfig)],
-  providers: [],
-  bootstrap: [AppComponent]
+    declarations: [AppComponent],
+    imports: [BrowserModule, HttpClientModule, NgxIndexedDBModule.forRoot(dbConfig)],
+    providers: [],
+    bootstrap: [AppComponent]
 })
 export class AppModule {}
