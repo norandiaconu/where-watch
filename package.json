@@ -1,13 +1,12 @@
 {
     "name": "where-watch",
-    "version": "1.3.3",
+    "version": "1.3.4",
     "bin": {
         "where-watch": "index.js"
     },
     "scripts": {
-        "start": "start http://localhost:8080 && http-server ./docs",
-        "build": "ng build && npm run obfuscate && npm run start",
-        "obfuscate": "javascript-obfuscator docs && node obfuscate.js",
+        "start": "vite preview --port 8080 --outDir ./docs --open",
+        "build": "ng build && javascript-obfuscator docs && node obfuscate.js && npm run start",
         "test": "jest",
         "lint": "eslint .",
         "full": "npm run lint && npm run test && npm run build"
@@ -18,9 +17,7 @@
         "@angular/compiler": "^18.2.13",
         "@angular/core": "^18.2.13",
         "@angular/platform-browser": "^18.2.13",
-        "@angular/platform-browser-dynamic": "^18.2.13",
         "@ngrx/store": "~18.1.1",
-        "http-server": "~14.1.1",
         "ngx-indexed-db": "~19.0.0",
         "rxjs": "~7.5.0",
         "tslib": "^2.3.0",
@@ -29,11 +26,6 @@
     },
     "devDependencies": {
         "@angular-devkit/build-angular": "^18.2.19",
-        "@angular-eslint/builder": "18.4.3",
-        "@angular-eslint/eslint-plugin": "18.4.3",
-        "@angular-eslint/eslint-plugin-template": "18.4.3",
-        "@angular-eslint/schematics": "18.4.3",
-        "@angular-eslint/template-parser": "18.4.3",
         "@angular/cli": "^18.2.19",
         "@angular/compiler-cli": "^18.2.13",
         "@types/jest": "~29.5.12",
@@ -41,6 +33,7 @@
         "@typescript-eslint/eslint-plugin": "^7.2.0",
         "@typescript-eslint/eslint-plugin-tslint": "~7.0.2",
         "@typescript-eslint/parser": "^7.2.0",
+        "angular-eslint": "~18.4.3",
         "eslint": "^8.57.0",
         "eslint-plugin-import": "~2.31.0",
         "javascript-obfuscator": "^4.0.2",

@@ -1,12 +1,15 @@
-import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-
-import { AppModule } from './app/app.module';
+import { enableProdMode, importProvidersFrom } from '@angular/core';
 import { environment } from './environments/environment';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
+import { NgxIndexedDBModule } from 'ngx-indexed-db';
+import { dbConfig } from './app/db';
+import { AppComponent } from './app/app.component';
 
 if (environment.production) {
-  enableProdMode();
+    enableProdMode();
 }
 
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.error(err));
+bootstrapApplication(AppComponent, {
+    providers: [importProvidersFrom(BrowserModule, NgxIndexedDBModule.forRoot(dbConfig)), provideHttpClient(withInterceptorsFromDi())]
+}).catch((err) => console.error(err));

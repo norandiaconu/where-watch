@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { z } from 'zod';
 import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { catchError, of, tap } from 'rxjs';
+import { NgTemplateOutlet, NgClass } from '@angular/common';
 
 interface LoginResponse {
     data: {
@@ -86,22 +87,27 @@ interface Entry {
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss']
+    styleUrls: ['./app.component.scss'],
+    standalone: true,
+    imports: [NgTemplateOutlet, NgClass]
 })
 export class AppComponent {
-    title = 'where-watch';
-    results: ZodApiResponse = [];
-    httpOptions = {
+    protected results: ZodApiResponse = [];
+    protected httpOptions = {
         headers: {
             Authorization: ''
         }
     };
-    date = '';
-    chosen = '';
-    whenResults: SearchData[] = [];
-    future = false;
+    public title = 'where-watch';
+    protected date = '';
+    protected chosen = '';
+    protected whenResults: SearchData[] = [];
+    protected future = false;
 
-    constructor(private readonly http: HttpClient, private db: NgxIndexedDBService) {
+    private readonly http = inject(HttpClient);
+    private readonly db = inject(NgxIndexedDBService);
+
+    constructor() {
         this.db.getAll<Entry>('login').subscribe((entries: Entry[]) => {
             this.httpOptions.headers.Authorization = entries[0]?.token;
         });

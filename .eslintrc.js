@@ -15,13 +15,15 @@ module.exports = {
     ignorePatterns: [
         "coverage/",
         "docs/",
+        "environments/",
         ".eslintrc.js",
         "index.js",
         "jest.config.js",
         "main.ts",
+        "polyfills.ts",
         "setup-jest.ts",
-        "tailwind.config.js",
-        "obfuscate.js"
+        "obfuscate.js",
+        "tailwind.config.js"
     ],
     env: {
         browser: true,

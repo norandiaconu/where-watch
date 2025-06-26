@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import { environment } from '../environments/environment.mock';
-import { HttpClientModule } from '@angular/common/http';
+import { environment } from '../environments/environment';
+import { provideHttpClient } from '@angular/common/http';
 import { NgxIndexedDBModule } from 'ngx-indexed-db';
 import { dbConfig } from './db';
 
@@ -14,9 +14,8 @@ const env = {
 describe('AppComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [HttpClientModule, NgxIndexedDBModule.forRoot(dbConfig)],
-            declarations: [AppComponent],
-            providers: [{ provide: environment, useValue: env }]
+            imports: [NgxIndexedDBModule.forRoot(dbConfig), AppComponent],
+            providers: [provideHttpClient(), { provide: environment, useValue: env }]
         }).compileComponents();
     });
 
