@@ -72,6 +72,13 @@ const ZodApiResponse = z.array(
                                 type: z.string()
                             })
                         )
+                    ),
+                    paramount: z.optional(
+                        z.array(
+                            z.object({
+                                type: z.string()
+                            })
+                        )
                     )
                 })
             )
@@ -88,7 +95,6 @@ interface Entry {
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
-    standalone: true,
     imports: [NgTemplateOutlet, NgClass]
 })
 export class AppComponent {
@@ -151,6 +157,9 @@ export class AppComponent {
                     where.push(location[0]);
                 }
                 if (location[0] === 'netflix' && type.type === 'subscription') {
+                    where.push(location[0]);
+                }
+                if (location[0] === 'paramount' && type.type === 'subscription') {
                     where.push(location[0]);
                 }
             });
