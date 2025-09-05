@@ -119,7 +119,7 @@ export class AppComponent {
         });
     }
 
-    async search(inputTitle: string): Promise<ZodApiResponse> {
+    protected async search(inputTitle: string): Promise<ZodApiResponse> {
         const url = `https://streaming-availability.p.rapidapi.com/v2/search/title?title=${inputTitle}&country=us`;
         const options = {
             method: 'GET',
@@ -137,7 +137,7 @@ export class AppComponent {
         return ZodApiResponse.parse(this.results);
     }
 
-    checkWhere(locations: any): string[] {
+    protected checkWhere(locations: any): string[] {
         const where: string[] = [];
         Object.entries(locations).forEach((location: any) => {
             location[1].forEach((type: { type: string }) => {
@@ -167,7 +167,7 @@ export class AppComponent {
         return where;
     }
 
-    login(): void {
+    protected login(): void {
         this.http
             .post<LoginResponse>('https://api4.thetvdb.com/v4/login', {
                 apikey: environment.whenApiKey
@@ -183,7 +183,7 @@ export class AppComponent {
             });
     }
 
-    searchWhen(searchTerm: string) {
+    protected searchWhen(searchTerm: string) {
         this.date = '';
         this.chosen = '';
         this.http
@@ -214,7 +214,7 @@ export class AppComponent {
             .subscribe();
     }
 
-    lastAiring(searchData: SearchData): void {
+    protected lastAiring(searchData: SearchData): void {
         this.http.get<ResultData>('https://api4.thetvdb.com/v4/series/' + searchData.tvdb_id, this.httpOptions).subscribe((resultData) => {
             this.chosen = 'When to watch ' + searchData.name + ':';
             this.date = resultData.data.lastAired;
@@ -223,7 +223,7 @@ export class AppComponent {
         });
     }
 
-    isEmpty(obj: object): boolean {
+    protected isEmpty(obj: object): boolean {
         return obj && Object.keys(obj).length === 0;
     }
 }

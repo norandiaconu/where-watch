@@ -2,9 +2,10 @@
     <span class="ml30">where-watch</span>
     <div class="spacer"></div>
     @if (this.httpOptions.headers.Authorization) {
-    <span class="logged-in">Logged In</span>
-    } @if (!this.httpOptions.headers.Authorization) {
-    <span class="not-logged-in">Logged Out</span>
+        <span class="logged-in">Logged In</span>
+    }
+    @if (!this.httpOptions.headers.Authorization) {
+        <span class="not-logged-in">Logged Out</span>
     }
     <button (click)="login()" class="login">LOGIN</button>
 </div>
@@ -16,44 +17,51 @@
         <button (click)="searchWhen(box.value)" class="mb10 search" [disabled]="!this.httpOptions.headers.Authorization">WHEN</button>
     </span>
     @for (item of results; track item) {
-    <div class="mb5">
-        <span class="title">{{ item.title }} ({{ item.year }}{{ item.firstAirYear }}) -></span>
-        @if (isEmpty(item.streamingInfo) || checkWhere(item.streamingInfo.us).length === 0) {
-        <span class="title">N/A</span>
-        } @if (!isEmpty(item.streamingInfo)) {
-        <span>
-            <ng-template
-                #location
-                [ngTemplateOutlet]="location"
-                let-location
-                [ngTemplateOutletContext]="{ $implicit: checkWhere(item.streamingInfo.us) }"
-            >
-                @if (location.includes('hbo')) {
-                <span class="hbo">HBO</span>
-                } @if (location.includes('hulu')) {
-                <span class="hulu">Hulu</span>
-                } @if (location.includes('peacock')) {
-                <span class="peacock">Peacock</span>
-                } @if (location.includes('apple')) {
-                <span class="apple">Apple</span>
-                } @if (location.includes('prime')) {
-                <span class="prime">Prime</span>
-                } @if (location.includes('netflix')) {
-                <span class="netflix">Netflix</span>
-                } @if (location.includes('paramount')) {
-                <span class="paramount">Paramount</span>
-                }
-            </ng-template>
-        </span>
-        }
-        <br />
-    </div>
+        <div class="mb5">
+            <span class="title">{{ item.title }} ({{ item.year }}{{ item.firstAirYear }}) -></span>
+            @if (isEmpty(item.streamingInfo) || checkWhere(item.streamingInfo.us).length === 0) {
+                <span class="title">N/A</span>
+            }
+            @if (!isEmpty(item.streamingInfo)) {
+                <span>
+                    <ng-template
+                        #location
+                        [ngTemplateOutlet]="location"
+                        let-location
+                        [ngTemplateOutletContext]="{ $implicit: checkWhere(item.streamingInfo.us) }"
+                    >
+                        @if (location.includes("hbo")) {
+                            <span class="hbo">HBO</span>
+                        }
+                        @if (location.includes("hulu")) {
+                            <span class="hulu">Hulu</span>
+                        }
+                        @if (location.includes("peacock")) {
+                            <span class="peacock">Peacock</span>
+                        }
+                        @if (location.includes("apple")) {
+                            <span class="apple">Apple</span>
+                        }
+                        @if (location.includes("prime")) {
+                            <span class="prime">Prime</span>
+                        }
+                        @if (location.includes("netflix")) {
+                            <span class="netflix">Netflix</span>
+                        }
+                        @if (location.includes("paramount")) {
+                            <span class="paramount">Paramount</span>
+                        }
+                    </ng-template>
+                </span>
+            }
+            <br />
+        </div>
     }
     <div class="list">
         @for (result of whenResults; track result) {
-        <button (click)="lastAiring(result)" class="buttons">
-            {{ result.name }}
-        </button>
+            <button (click)="lastAiring(result)" class="buttons">
+                {{ result.name }}
+            </button>
         }
     </div>
     <div class="date">{{ chosen }}</div>
