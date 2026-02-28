@@ -1,6 +1,6 @@
 {
     "name": "where-watch",
-    "version": "1.4.6",
+    "version": "1.4.7",
     "bin": {
         "where-watch": "index.js"
     },
